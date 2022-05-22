@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>书籍管理系统</title>
+    <script>
+        var xhttp = new XMLHttpRequest();
+        function refresh()
+        {
+            xhttp.onreadystatechange = function () {
+
+                if (this.readyState == 4 && this.status == 200) {
+                    const obj = JSON.parse(this.responseText);
+
+                    if(obj.success)
+                    {
+                        const tblBody = document.getElementById("users");
+                        tblBody.innerHTML='';
+                        for(let user of obj.data)
+                        {
+                            // console.log(user);
+                            const tr = document.createElement('tr');
+                            const td = document.createElement("td");
+                            td.innerText = user.id;
+                            const td2 = document.createElement("td");
+                            td2.innerText = user.username;
+                            const td3 = document.createElement("td");
+                            td3.innerText = "********";
+                            const td4 = document.createElement("td");
+                            td4.innerText = user.power;
+                            const td6 = document.createElement("td");
+                            const iptDel=document.createElement('input');
+                            iptDel.type = 'button';
+                            iptDel.value=   '删除';
+                            iptDel.addEventListener('click',function (){
+                                ondelete(user);
+                                return false;
+                            });
+                            const iptUpdate =document.createElement('input');
+                            iptUpdate.type = 'button';
+                            iptUpdate.value ="修改";
+                            iptUpdate.addEventListener('click',function (){
+                                update(user);
+                                return false;
+                            });
+                            td6.appendChild(iptUpdate);
+                            td6.appendChild(iptDel);
+                            tr.appendChild(td);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            tr.appendChild(td4);
+                            tr.appendChild(td6);
+                            tblBody.appendChild(tr);
+                        }
+                    }
+
+                }
+
+            }
+            xhttp.open("GET", "/AllUser", true);
+            xhttp.setRequestHeader("Accept", 'application/json');
+            xhttp.send();
+        }
+
+        function ondelete(user)
+        {
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const obj = JSON.parse(this.responseText);
+                    // console.log(obj);
+                    if(obj.success)
+                    {
+                        alert("删除成功");
+                        refresh();
+                    }
+                    else alert("删除失败");
+                }
+            }
+            xhttp.open("POST", "/user/delete?id="+ user.id , true);
+            xhttp.setRequestHeader("Accept", 'application/json');
+            xhttp.send();
+        }
+
+        function update(user){
+            const iptId=document.getElementById('iptId');
+            const iptName=document.getElementById('iptName');
+            const iptPassword = document.getElementById('iptPassword');
+            const iptPower = document.getElementById('iptPower');
+            iptId.value=user.id;
+            iptName.value=user.username;
+            iptPassword.value="********";
+            iptPower.value=user.power;
+        }
+
+        function getById(){
+            const iptId=document.getElementById('iptId');
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const obj = JSON.parse(this.responseText);
+                    if(obj.success)
+                    {
+                        const tblBody = document.getElementById("users");
+                        // console.log(obj);
+                        tblBody.innerHTML='';
+                        for(let user of obj.data)
+                        {
+                            // console.log("user:"+user);
+                            const tr = document.createElement('tr');
+                            const td = document.createElement("td");
+                            td.innerText = user.id;
+                            const td2 = document.createElement("td");
+                            // console.log(user.username);
+                            td2.innerText = user.username;
+                            const td3 = document.createElement("td");
+                            td3.innerText = "********";
+                            const td4 = document.createElement("td");
+                            td4.innerText = user.power;
+                            const td6 = document.createElement("td");
+                            const iptDel=document.createElement('input');
+                            iptDel.type = 'button';
+                            iptDel.value=   '删除';
+                            iptDel.addEventListener('click',function (){
+                                ondelete(user);
+                                return false;
+                            });
+                            const iptUpdate =document.createElement('input');
+                            iptUpdate.type = 'button';
+                            iptUpdate.value ="修改";
+                            iptUpdate.addEventListener('click',function (){
+                                update(user);
+                                return false;
+                            });
+                            td6.appendChild(iptUpdate);
+                            td6.appendChild(iptDel);
+                            tr.appendChild(td);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            tr.appendChild(td4);
+                            tr.appendChild(td6);
+                            tblBody.appendChild(tr);
+                        }
+                    }
+
+                }
+
+            }
+            xhttp.open("GET", "/user?id="+ iptId.value, true);
+            xhttp.setRequestHeader("Accept", 'application/json');
+            xhttp.send();
+        }
+
+        function add()
+        {
+            const iptName=document.getElementById('iptName');
+            const iptPassword = document.getElementById('iptPassword');
+            const iptPower = document.getElementById('iptPower');
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const obj = JSON.parse(this.responseText);
+                    // console.log(obj);
+                    if(obj.success)
+                    {
+                        alert("添加成功");
+                        refresh();
+                    }
+                    else alert("添加失败");
+                }
+            }
+            xhttp.open("POST", "/user/add?username="+ iptName.value+'&password='+iptPassword.value+'&power='+iptPower.value, true);
+            xhttp.setRequestHeader("Accept", 'application/json');
+            xhttp.send();
+        }
+
+        function onUpdate(){
+            const iptId=document.getElementById('iptId');
+            const iptName=document.getElementById('iptName');
+            const iptPassword = document.getElementById('iptPassword');
+            const iptPower = document.getElementById('iptPower');
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    const obj = JSON.parse(this.responseText);
+                    // console.log(obj);
+                    if(obj.success)
+                    {
+                        alert("修改成功");
+                        refresh();
+                    }
+                    else alert("修改失败");
+                }
+            }
+            xhttp.open("PUT", "/user/update?username="+ iptName.value+'&password='+iptPassword.value+ '&power=' + iptPower.value+ '&id=' + iptId.value, true);
+            xhttp.setRequestHeader("Accept", 'application/json');
+            xhttp.send();
+        }
+
+        window.onload = function () {
+          refresh();
+        }
+
+    </script>
+
+    <style type="text/css">
+        .d1{
+            text-align:center;
+            margin:0 auto;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+<h1  class="d1">
+    用户管理系统
+</h1>
+<div class="d1" >
+    <form>
+        <div>
+            <label for="iptId">Id</label>
+            <input id="iptId" type="text" placeholder="输入id号" name="id">
+        </div>
+        <div>
+            <label for="iptName">账号</label>
+            <input id="iptName" type="text" placeholder="输入账号" name="username">
+        </div>
+        <div>
+            <label for="iptPassword">密码</label>
+            <input id="iptPassword" type="text" placeholder="输入密码" name="password">
+        </div>
+        <div>
+            <label for="iptPower">权限</label>
+            <input id="iptPower" type="text" placeholder="输入权限" name="power">
+        </div>
+    </form>
+    <input type="button" value="添加" onclick="add()">
+    <input type="button" value="刷新" onclick="refresh()">
+    <input type="button" value="查询" onclick="getById()">
+    <input type="button" value="确认修改" onclick="onUpdate()">
+    <table class="d1" >
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>账号</th>
+                <th>密码</th>
+                <th>权限</th>
+            </tr>
+        </thead>
+        <tbody id="users">
+
+        </tbody>
+    </table>
+<form action="/upload" method="post" enctype="multipart/form-data" >
+    <input type="file" name="uploadFile" value="请选择文件">
+    <input type="submit" value="上传">
+</form>
+<form action="/download" method="get" >
+    <input type="submit" value="下载">
+</form>
+    <form action="/toControl" method="get">
+        <input type="submit" value="返回">
+    </form>
+</div>
+</div>
+
+</body>
+</html>

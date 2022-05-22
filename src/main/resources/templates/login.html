@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        .d1{
+            text-align: center;
+            border-radius: 20px;
+            width: 300px;
+            height: 220px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .d2{
+            text-align: left;
+        }
+    </style>
+    <!--    <link rel="stylesheet" href="./css/app.css">-->
+</head>
+<body>
+<div class="page login-page; d1">
+    <h1>用户登录</h1>
+    <form action="login" method="post">
+<!--        <img class="logo" src="./img/people.svg" alt="">-->
+        <p id="frmErr" class="error" th:text="${msg}" th:if="${msg != null}"></p>
+        <div class="d2">
+            <p id="userNameErr" class="error"></p>
+            <label for="userName">用户名:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+<!--            <img src="./img/用户.svg" class="ipt-icon" alt="">-->
+            <input type="text" name="userName" id="userName">
+        </div>
+        <div class="d2">
+            <p id="passwordErr" class="error"></p>
+            <label for="password">密码:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+<!--            <img src="./img/密码.svg" class="ipt-icon" alt="">-->
+            <input type="password" name="password" id="password">
+        </div>
+        <button id="btnLogin">登录</button>
+    </form>
+</div>
+</body>
+</html>

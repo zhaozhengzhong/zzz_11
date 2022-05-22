@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>添加标注点-百度地图API</title>
+	<script type="text/javascript"
+			src="http://api.map.baidu.com/api?v=1.5&ak=7mtjGViOCWrfLByXm9PRBUWbnCU4rbYr"></script>
+</head>
+
+<body>
+<style type="text/css">
+	html {
+		height: 100%
+	}
+
+	body {
+		height: 100%;
+		margin: 0 10px;
+	}
+
+	#container {
+		height: 100%;
+		margin: 20px;
+	}
+
+	.info_ul {
+		margin: 0 0 5px 0;
+		padding: 0.2em 0;
+	}
+
+	.info_li {
+		line-height: 26px;
+		font-size: 15px;
+	}
+	.input-date{
+		padding: 10px 20px;
+	}
+
+	.info_span {
+		width: 50px;
+		display: inline-block;
+	}
+</style>
+<div class="input-date">
+	<input  type="text"   id="id"   placeholder="学生编号">
+	<input type="button" onclick="get()" value="显示学生位置">
+	<form action="/toControl" method="get">
+		<input type="submit" value="返回">
+	</form>
+</div>
+<div id="container"></div>
+<script type="text/javascript">
+	var map = new BMap.Map("container"); //初始化地图
+
+	var points = [
+	];//数据准备
+
+	map.centerAndZoom(new BMap.Point(103.388611, 35.563611), 5);//设置中心点和显示级别。中国。
+	var id=0;
+	map.enableScrollWheelZoom();//滚轮放大缩小。
+	var interval;
+	var f=0;
+
+	function addMarker(points) {  // 创建图标对象
+		var point, marker;
+		// 创建标注对象并添加到地图
+
+			point = new BMap.Point(getRandom(23)+100, getRandom(23)+27);
+			marker = new BMap.Marker(point);
+			map.addOverlay(marker);
+			add(point);
+			//给标注点添加点击事件。使用立即执行函数和闭包
+
+	}
+	function getRandom(n){
+		return Math.random()*n+1
+	}
+
+	function add(point)
+	{
+		var xhttp = new XMLHttpRequest();
+		const iptId=document.getElementById('id');
+		xhttp.onreadystatechange = function () {
+			if (this.readyState == 4 && this.status == 200) {
+				const obj = JSON.parse(this.responseText);
+				// console.log(obj);
+				if(obj.success)
+				{
+					// alert("添加成功");
+					// refresh();
+				}
+				else alert("添加失败");
+			}
+		}
+		xhttp.open("POST", "/addPosition?id="+ iptId.value+'&lng='+point.lng+'&lat='+point.lat, true);
+		xhttp.setRequestHeader("Accept", 'application/json');
+		xhttp.send();
+	}
+	function get()
+	{
+		id1=document.getElementById("id");
+		if(f==1&&id1.value!=id)
+		{
+			id=id1.value;
+			map.clearOverlays();
+			window.clearInterval(interval);
+		}
+
+		interval=window.setInterval("addMarker()",1000);
+		f=1;
+	}
+	//显示信息窗口，显示标注点的信息。
+	function showInfo(thisMaker) {
+		const iptId=document.getElementById('id');
+		var sContent =
+				'<ul class="info_ul">'
+				+ '<li class="info_li">'
+				+ '<span class="info_span">id：</span>' + iptId.value + '</li>'
+				+ '</ul>';
+		var infoWindow = new BMap.InfoWindow(sContent);// 创建信息窗口对象
+		thisMaker.openInfoWindow(infoWindow);//图片加载完毕重绘infowindow
+	}
+
+</script>
+</body>
+
+</html>
